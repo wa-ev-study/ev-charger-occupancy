@@ -1,7 +1,20 @@
-TOMTOM key present: True
-NREL: ERROR ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'developer.nrel.gov\', port=443): Max retries exceeded with url: /api/alt-fuel-stations/v1.json?api_key
-TomTom-poiSearch: HTTP 200 | bytes=191
-   TomTom results=0; has_avail_id=False
-TomTom-evSearch: HTTP 403 | bytes=94
+
+=== nearbySearch cat7309: HTTP 200 ===
+  results=20
+   - Blink | avail_id=f23da320-519b-4ede-bb98-af75bd8a12b2 | 10333 Main Street, Bellevue, WA 98004 | ['electric vehicle station']
+   - ChargePoint | avail_id=9da03792-2573-4664-9379-779968503309 | 85 Diamond's Ranch, Bellevue, WA 98004 | ['electric vehicle station']
+   - ChargePoint | avail_id=21193436-197f-4916-a9f6-8be2ae429a8a | 85 Diamond's Ranch, Bellevue, WA 98004 | ['electric vehicle station']
+
+=== categorySearch 'electric vehicle station': HTTP 200 ===
+  results=20
+   - Blink | avail_id=f23da320-519b-4ede-bb98-af75bd8a12b2 | 10333 Main Street, Bellevue, WA 98004 | ['electric vehicle station']
+   - ChargePoint | avail_id=9da03792-2573-4664-9379-779968503309 | 85 Diamond's Ranch, Bellevue, WA 98004 | ['electric vehicle station']
+   - ChargePoint | avail_id=21193436-197f-4916-a9f6-8be2ae429a8a | 85 Diamond's Ranch, Bellevue, WA 98004 | ['electric vehicle station']
+
+=== poiSearch cat7309 broad: HTTP 200 ===
+  results=5
+   - EV Connect | avail_id=10de6716-b031-8ab7-844b-697b38122651 | 10650 Northeast 9th Place, Bellevue, WA 98004 | ['electric vehicle station']
+   - EV Connect | avail_id=e008497b-8c01-491f-9b10-2b744d623c2f | 3605 132nd Avenue Southeast, Bellevue, WA 98006 | ['electric vehicle station']
+   - EV Connect | avail_id=054ae5b6-5e11-870c-895d-de3d523a671b | 4120 86th Avenue Southeast, Mercer Island, WA 98040 | ['electric vehicle station']
 exit_code=0
 No raw data for 2026-07-15.
