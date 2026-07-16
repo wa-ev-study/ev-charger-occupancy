@@ -1,10 +1,8 @@
 name: Daily rollup
 
 on:
-  push:
-    branches: [main]        # TEMP: lets a code push trigger a run for debugging.
   schedule:
-    - cron: "30 4 * * *"
+    - cron: "30 4 * * *"     # ~9:30 PM Pacific, after collection closes.
   workflow_dispatch: {}
 
 permissions:
@@ -24,7 +22,7 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
 
-      - name: Build station list + poll + rollup (logged)
+      - name: Refresh station list and roll up
         env:
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
@@ -32,25 +30,23 @@ jobs:
           mkdir -p data/master
           set +e
           {
-            echo "===== BUILD STATIONS ====="
+            echo "===== REFRESH STATION LIST ====="
             python src/stations.py Bellevue
-            echo "===== POLL (run_due) ====="
-            python src/run_due.py
-            echo "===== ROLLUP ====="
+            echo "===== ROLLUP + PRUNE ====="
             python src/rollup.py
-          } > data/master/_build_log.txt 2>&1
-          echo "exit_code=$?" >> data/master/_build_log.txt
-          echo "----- log -----"; cat data/master/_build_log.txt
+          } > data/master/_last_run_log.txt 2>&1
+          echo "exit=$?" >> data/master/_last_run_log.txt
+          cat data/master/_last_run_log.txt
 
-      - name: Commit results + log
+      - name: Commit summaries
         run: |
           git config user.name  "ev-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A data/
           if ! git diff --cached --quiet; then
-            git commit -m "run: build log $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git commit -m "rollup: $(date -u +'%Y-%m-%d')"
             git pull --rebase --autostash origin main || true
             git push
           else
-            echo "No changes to commit."
+            echo "Nothing to roll up."
           fi
