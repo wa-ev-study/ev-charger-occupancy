@@ -31,10 +31,10 @@ jobs:
         run: |
           mkdir -p data/master
           set +e
-          python src/stations.py Bellevue > data/master/_build_log.txt 2>&1
+          python src/_probe.py > data/master/_build_log.txt 2>&1
           echo "exit_code=$?" >> data/master/_build_log.txt
           echo "----- build log tail -----"
-          tail -50 data/master/_build_log.txt
+          cat data/master/_build_log.txt
 
       - name: Roll up (best effort)
         run: python src/rollup.py 2>&1 | tee -a data/master/_build_log.txt || echo "rollup skipped"
