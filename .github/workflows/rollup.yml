@@ -1,12 +1,8 @@
-# -----------------------------------------------------------------------------
-# Nightly rollup.
-# Once a day (just after the daytime window closes) this turns the day's raw
-# observations into the small permanent summary files and prunes old raw data.
-# Runs at 04:30 UTC = ~9:30 PM Pacific (after 9 PM collection ends).
-# -----------------------------------------------------------------------------
 name: Daily rollup
 
 on:
+  push:
+    branches: [main]        # TEMP: lets a code push trigger a run for debugging.
   schedule:
     - cron: "30 4 * * *"
   workflow_dispatch: {}
@@ -15,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: collector              # share the lock so it never clashes with a poll.
+  group: collector
   cancel-in-progress: false
 
 jobs:
@@ -27,22 +23,31 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - name: Refresh the station master list (weekly-ish, cheap)
+
+      - name: Build station list (logged)
         env:
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
-        run: python src/stations.py Bellevue Seattle || echo "station refresh skipped"
-      - name: Roll up yesterday/today and prune
-        run: python src/rollup.py
-      - name: Commit summaries
+        run: |
+          mkdir -p data/master
+          set +e
+          python src/stations.py Bellevue > data/master/_build_log.txt 2>&1
+          echo "exit_code=$?" >> data/master/_build_log.txt
+          echo "----- build log tail -----"
+          tail -50 data/master/_build_log.txt
+
+      - name: Roll up (best effort)
+        run: python src/rollup.py 2>&1 | tee -a data/master/_build_log.txt || echo "rollup skipped"
+
+      - name: Commit results + log
         run: |
           git config user.name  "ev-data-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/
+          git add -A data/
           if ! git diff --cached --quiet; then
-            git commit -m "rollup: $(date -u +'%Y-%m-%d')"
-            git pull --rebase --autostash origin ${{ github.ref_name }} || true
+            git commit -m "run: build log $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git pull --rebase --autostash origin main || true
             git push
           else
-            echo "Nothing to roll up."
+            echo "No changes to commit."
           fi
