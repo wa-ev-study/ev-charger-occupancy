@@ -1,0 +1,99 @@
+# =============================================================================
+# EV Charger Occupancy Project - Configuration
+# -----------------------------------------------------------------------------
+# This is the ONE file you edit to change what the system does. You do NOT need
+# to touch any code to change cities, polling frequency, the daytime window, or
+# the free-tier safety limit. Comments explain every setting in plain English.
+# =============================================================================
+
+project:
+  name: "WA EV Charger Occupancy Study"
+  timezone: "America/Los_Angeles"   # All "7am-9pm" windows use Pacific time.
+
+# -----------------------------------------------------------------------------
+# FREE-TIER SAFETY LIMIT
+# TomTom gives 2,500 free "checks" (requests) per day. The collector counts
+# every check it makes and will STOP before crossing this number, so the free
+# pilot can never accidentally cost money. Raise this only after a paid plan
+# (with a credit card) is added to the TomTom account.
+# -----------------------------------------------------------------------------
+budget:
+  daily_request_cap: 2400          # Held just under 2,500 as a safety margin.
+  stop_when_exceeded: true         # If true, skip remaining polls once the cap is near.
+
+# -----------------------------------------------------------------------------
+# DAYTIME WINDOW
+# Public chargers are only polled during these hours (Pacific). Outside this
+# window the scheduled job wakes up, sees it's "closed", and does nothing.
+# The multi-family group ignores this and runs 24 hours (see groups below).
+# -----------------------------------------------------------------------------
+daytime_window:
+  start_hour: 7    # 7 AM Pacific
+  end_hour: 21     # 9 PM Pacific (21:00)
+
+# -----------------------------------------------------------------------------
+# COLLECTION GROUPS
+# Each group is a set of chargers polled on its own schedule. This is where the
+# "blended pilot" lives: full Bellevue every 30 min + funded subset every 15.
+# To add Seattle later (paid), just set its `enabled: true`.
+# -----------------------------------------------------------------------------
+groups:
+
+  bellevue_census:
+    enabled: true
+    description: "All public chargers in Bellevue (breadth)."
+    cities: ["Bellevue"]
+    funded_only: false
+    multifamily_only: false
+    poll_minutes: 30          # Check each charger every 30 minutes...
+    window: "daytime"         # ...only during the 7am-9pm Pacific window.
+
+  funded_subset:
+    enabled: true
+    description: "State/federally funded chargers (core hypothesis, full speed)."
+    cities: ["Bellevue", "Seattle"]
+    funded_only: true         # Only chargers tagged as publicly funded.
+    multifamily_only: false
+    poll_minutes: 15          # Full production cadence to prove the fast path.
+    window: "daytime"
+
+  multifamily:
+    enabled: true
+    description: "Apartment/condo chargers (home-charger-equivalent argument)."
+    cities: ["Bellevue", "Seattle"]
+    funded_only: false
+    multifamily_only: true
+    poll_minutes: 30
+    window: "24h"             # Full 24 hours, because usage is overnight.
+
+  # ---- Disabled until a paid plan is added (the "broader view" upgrade) ----
+  seattle_census:
+    enabled: false
+    description: "All public chargers in Seattle (comparative benchmark)."
+    cities: ["Seattle"]
+    funded_only: false
+    multifamily_only: false
+    poll_minutes: 30
+    window: "daytime"
+
+# -----------------------------------------------------------------------------
+# DATA RETENTION
+# We keep raw, minute-level observations only briefly so new metrics can be
+# back-computed, then prune them. Daily summaries are kept forever (they're tiny).
+# The funded + multi-family raw data is kept longer because the argument leans
+# on it and a data scientist may want to re-examine it.
+# -----------------------------------------------------------------------------
+retention:
+  raw_days_default: 14         # Delete general raw rows older than this.
+  raw_days_keep_subsets: 120   # Keep funded + multi-family raw rows much longer.
+
+# -----------------------------------------------------------------------------
+# OCCUPANCY DEFINITION (documented here so the method is transparent)
+# occupancy % = occupied / (available + occupied + reserved)
+# outOfService and unknown ports are EXCLUDED from the denominator so a broken
+# charger is never counted as "in use" or "idle". This is the conservative,
+# defensible choice.
+# -----------------------------------------------------------------------------
+occupancy:
+  exclude_out_of_service: true
+  exclude_unknown: true
