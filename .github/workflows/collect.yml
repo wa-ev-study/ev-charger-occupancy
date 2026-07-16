@@ -1,1 +1,53 @@
+# -----------------------------------------------------------------------------
+# Collector schedule.
+# Runs every ~15 minutes. The Python "run_due" step decides which groups are
+# actually due and whether we're inside the 7am-9pm Pacific window, then polls
+# TomTom and commits the new rows back to the repo.
+#
+# This is a PUBLIC repo, so these runs are free and unlimited. The TomTom API
+# key is read from an encrypted GitHub Secret and is never exposed in logs.
+# -----------------------------------------------------------------------------
+name: Collect charger availability
 
+on:
+  schedule:
+    - cron: "*/15 * * * *"     # every 15 minutes, all day (UTC). The code gates the window.
+  workflow_dispatch: {}         # lets you run it by hand from the Actions tab.
+
+permissions:
+  contents: write               # needed to commit the new data files.
+
+concurrency:
+  group: collector              # never run two collectors at once.
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Poll due groups
+        env:
+          TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+        run: python src/run_due.py
+
+      - name: Commit new data
+        run: |
+          git config user.name  "ev-data-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m "data: collection run $(date -u +'%Y-%m-%dT%H:%MZ')"
+            git pull --rebase --autostash origin ${{ github.ref_name }} || true
+            git push
+          else
+            echo "No new data this run."
+          fi
