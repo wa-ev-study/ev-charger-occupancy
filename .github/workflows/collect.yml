@@ -10,8 +10,6 @@
 name: Collect charger availability
 
 on:
-  push:
-    branches: [main]            # TEMP (verification): remove after confirming a run.
   schedule:
     - cron: "*/15 * * * *"     # every 15 minutes, all day (UTC). The code gates the window.
   workflow_dispatch: {}         # lets you run it by hand from the Actions tab.
