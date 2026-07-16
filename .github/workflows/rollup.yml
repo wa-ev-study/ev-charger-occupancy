@@ -24,20 +24,23 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
 
-      - name: Build station list (logged)
+      - name: Build station list + poll + rollup (logged)
         env:
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         run: |
           mkdir -p data/master
           set +e
-          python src/_probe.py > data/master/_build_log.txt 2>&1
+          {
+            echo "===== BUILD STATIONS ====="
+            python src/stations.py Bellevue
+            echo "===== POLL (run_due) ====="
+            python src/run_due.py
+            echo "===== ROLLUP ====="
+            python src/rollup.py
+          } > data/master/_build_log.txt 2>&1
           echo "exit_code=$?" >> data/master/_build_log.txt
-          echo "----- build log tail -----"
-          cat data/master/_build_log.txt
-
-      - name: Roll up (best effort)
-        run: python src/rollup.py 2>&1 | tee -a data/master/_build_log.txt || echo "rollup skipped"
+          echo "----- log -----"; cat data/master/_build_log.txt
 
       - name: Commit results + log
         run: |
