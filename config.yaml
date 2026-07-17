@@ -48,23 +48,28 @@ groups:
     poll_minutes: 30          # Check each charger every 30 minutes...
     window: "daytime"         # ...only during the 7am-9pm Pacific window.
 
+  # NOTE: The funded and apartment/condo subsets are NOT polled separately.
+  # bellevue_census already polls every Bellevue charger, and each charger
+  # carries its funded / multi-family tag, so the nightly report simply filters
+  # those subsets out of the same data. This avoids polling any charger twice
+  # and keeps us well under the free daily limit. (Disabled on purpose.)
   funded_subset:
-    enabled: true
-    description: "State/federally funded chargers (core hypothesis, full speed)."
-    cities: ["Bellevue", "Seattle"]
-    funded_only: true         # Only chargers tagged as publicly funded.
+    enabled: false
+    description: "Derived in the report from tags; not polled separately."
+    cities: ["Bellevue"]
+    funded_only: true
     multifamily_only: false
-    poll_minutes: 15          # Full production cadence to prove the fast path.
+    poll_minutes: 30
     window: "daytime"
 
   multifamily:
-    enabled: true
-    description: "Apartment/condo chargers (home-charger-equivalent argument)."
-    cities: ["Bellevue", "Seattle"]
+    enabled: false
+    description: "Derived in the report from tags; not polled separately."
+    cities: ["Bellevue"]
     funded_only: false
     multifamily_only: true
     poll_minutes: 30
-    window: "24h"             # Full 24 hours, because usage is overnight.
+    window: "daytime"
 
   # ---- Disabled until a paid plan is added (the "broader view" upgrade) ----
   seattle_census:
@@ -97,3 +102,27 @@ retention:
 occupancy:
   exclude_out_of_service: true
   exclude_unknown: true
+
+# -----------------------------------------------------------------------------
+# PILOT WINDOW (for reporting)
+# The official 7-day Bellevue pilot for WPC / Todd Meyers. Collection keeps
+# running after the end date (we do NOT auto-stop); the "running total" in the
+# nightly report covers this window.
+# -----------------------------------------------------------------------------
+pilot:
+  label: "Bellevue EV Charger Pilot"
+  start_date: "2026-07-18"   # Saturday
+  end_date: "2026-07-24"     # Friday (collection continues past this date)
+
+# -----------------------------------------------------------------------------
+# NIGHTLY EMAIL
+# After the day's collection closes (~9pm Pacific), the system builds one Excel
+# report and emails it to these recipients. Sender address + app password are
+# stored as GitHub secrets (GMAIL_ADDRESS, GMAIL_APP_PASSWORD), never in code.
+# -----------------------------------------------------------------------------
+email:
+  enabled: true
+  recipients:
+    - "tmyers@washingtonpolicy.org"
+    - "adamjwray@gmail.com"
+  subject_prefix: "EV Charger Pilot — Bellevue"

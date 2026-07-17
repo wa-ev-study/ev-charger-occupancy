@@ -1,9 +1,15 @@
-name: Daily rollup
+name: Nightly report + email
+
+# Runs once a day at 04:15 UTC = 9:15 PM Pacific (PDT), just after the day's
+# 7am-9pm collection window closes. It refreshes the station list (and tags
+# funded / apartment-condo chargers via NREL when reachable), rolls up the day,
+# builds one Excel report (Today + Running Total), commits it, and emails it to
+# Todd and Adam.
 
 on:
   schedule:
-    - cron: "30 4 * * *"     # ~9:30 PM Pacific, after collection closes.
-  workflow_dispatch: {}
+    - cron: "15 4 * * *"
+  workflow_dispatch: {}         # lets you run it by hand from the Actions tab.
 
 permissions:
   contents: write
@@ -13,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  rollup:
+  nightly:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,31 +28,39 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
 
-      - name: Refresh station list and roll up
+      - name: Refresh stations, roll up, build report
         env:
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         run: |
-          mkdir -p data/master
+          mkdir -p data/master data/reports
           set +e
           {
-            echo "===== REFRESH STATION LIST ====="
+            echo "===== REFRESH STATION LIST (+ NREL enrichment) ====="
             python src/stations.py Bellevue
             echo "===== ROLLUP + PRUNE ====="
             python src/rollup.py
+            echo "===== BUILD EXCEL REPORT ====="
+            python src/build_report.py
           } > data/master/_last_run_log.txt 2>&1
           echo "exit=$?" >> data/master/_last_run_log.txt
           cat data/master/_last_run_log.txt
 
-      - name: Commit summaries
+      - name: Commit report + summaries
         run: |
           git config user.name  "ev-data-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A data/
           if ! git diff --cached --quiet; then
-            git commit -m "rollup: $(date -u +'%Y-%m-%d')"
+            git commit -m "nightly report: $(date -u +'%Y-%m-%d')"
             git pull --rebase --autostash origin main || true
             git push
           else
-            echo "Nothing to roll up."
+            echo "Nothing new to commit."
           fi
+
+      - name: Email the report
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python src/send_report.py
