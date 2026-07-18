@@ -1,17 +1,14 @@
 name: Nightly report + email
 
 # Runs once a day at 04:15 UTC = 9:15 PM Pacific (PDT), just after the day's
-# 7am-9pm collection window closes. It refreshes the station list (and tags
-# funded / apartment-condo chargers via NREL when reachable), rolls up the day,
-# builds one Excel report (Today + Running Total), commits it, and emails it to
-# Todd and Adam.
+# 7am-9pm collection window closes. Refreshes the station list (and tags funded
+# / apartment-condo chargers via NREL when reachable), rolls up the day, builds
+# one Excel report (Today + Running Total), commits it, and emails it.
 
 on:
-  push:
-    branches: [main]        # TEMP (dry run): remove after confirming the email.
   schedule:
     - cron: "15 4 * * *"
-  workflow_dispatch: {}         # lets you run it by hand from the Actions tab.
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -42,8 +39,8 @@ jobs:
             python src/stations.py Bellevue
             echo "===== ROLLUP + PRUNE ====="
             python src/rollup.py
-            echo "===== BUILD EXCEL REPORT (dry-run: 2026-07-17) ====="
-            python src/build_report.py 2026-07-17
+            echo "===== BUILD EXCEL REPORT ====="
+            python src/build_report.py
           } > data/master/_last_run_log.txt 2>&1
           echo "exit=$?" >> data/master/_last_run_log.txt
           cat data/master/_last_run_log.txt
