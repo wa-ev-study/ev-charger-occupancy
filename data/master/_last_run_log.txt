@@ -1,8 +1,11 @@
-===== REFRESH STATION LIST =====
+===== REFRESH STATION LIST (+ NREL enrichment) =====
 TomTom: enumerating Bellevue ...
   Bellevue: 75 stations with availability IDs
   NREL enrichment skipped (unreachable): ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'developer.nrel.gov\', port=443): Max retries exceeded with url
 Saved 75 stations total (0 funded, 0 multi-family).
 ===== ROLLUP + PRUNE =====
-No raw data for 2026-07-17.
+Rolled up 2026-07-17: 75 stations summarized.
+===== BUILD EXCEL REPORT (dry-run: 2026-07-17) =====
+Report written: EV_Bellevue_Report_2026-07-17.xlsx
+Today: 75 chargers, avg occupancy 29.8%, 24.0% zero-use
 exit=0
