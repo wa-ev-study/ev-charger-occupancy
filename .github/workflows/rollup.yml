@@ -7,6 +7,8 @@ name: Nightly report + email
 # Todd and Adam.
 
 on:
+  push:
+    branches: [main]        # TEMP (dry run): remove after confirming the email.
   schedule:
     - cron: "15 4 * * *"
   workflow_dispatch: {}         # lets you run it by hand from the Actions tab.
@@ -40,8 +42,8 @@ jobs:
             python src/stations.py Bellevue
             echo "===== ROLLUP + PRUNE ====="
             python src/rollup.py
-            echo "===== BUILD EXCEL REPORT ====="
-            python src/build_report.py
+            echo "===== BUILD EXCEL REPORT (dry-run: 2026-07-17) ====="
+            python src/build_report.py 2026-07-17
           } > data/master/_last_run_log.txt 2>&1
           echo "exit=$?" >> data/master/_last_run_log.txt
           cat data/master/_last_run_log.txt
