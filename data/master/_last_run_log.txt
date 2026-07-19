@@ -4,8 +4,8 @@ TomTom: enumerating Bellevue ...
   NREL enrichment skipped (unreachable): ConnectionError(MaxRetryError('HTTPSConnectionPool(host=\'developer.nrel.gov\', port=443): Max retries exceeded with url
 Saved 75 stations total (0 funded, 0 multi-family).
 ===== ROLLUP + PRUNE =====
-No raw data for 2026-07-18.
+No raw data for 2026-07-19.
 ===== BUILD EXCEL REPORT =====
-Report written: EV_Bellevue_Report_2026-07-18.xlsx
+Report written: EV_Bellevue_Report_2026-07-19.xlsx
 Today: 0 chargers, avg occupancy None%, None% zero-use
 exit=0
