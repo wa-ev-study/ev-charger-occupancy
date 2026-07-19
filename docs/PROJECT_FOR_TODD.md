@@ -65,9 +65,13 @@ Four pieces:
 
 - **A GitHub repository** — the home for the code, the schedule, and all the
   collected data. Public, so the whole method is auditable.
-- **GitHub Actions** — the cloud scheduler that replaces a server. One timer
-  fires every 15 minutes to collect; another fires nightly to report. It runs in
-  GitHub's cloud, so nothing depends on anyone's computer being on.
+- **GitHub Actions** — the cloud compute that replaces a server, running in
+  GitHub's cloud so nothing depends on anyone's computer being on. Because
+  GitHub's *scheduler* is unreliable for frequent jobs, the collector doesn't
+  rely on it for timing: one job stays alive and polls every 30 minutes on the
+  runner's own clock (poll → sleep → poll), and the scheduler is only used to
+  (re)start that loop a few times a day. A separate nightly job builds and emails
+  the report.
 - **TomTom** — reached with a secret API key stored in GitHub's encrypted secret
   store (never in the code, even though the code is public).
 - **Small Python scripts**, each with one job:
