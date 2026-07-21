@@ -1,24 +1,21 @@
 # -----------------------------------------------------------------------------
-# Collector (self-timed loop).
+# Collector (self-timed, self-CHAINING loop).
 #
-# WHY A LOOP: GitHub's scheduler is unreliable for frequent crons — it was
-# launching us only every ~3 hours instead of every 30 minutes. So instead of
-# relying on the scheduler for timing, ONE job stays alive and polls every
-# 30 minutes on the runner's OWN clock (poll -> sleep -> poll). The scheduler is
-# now only used to (re)start the loop a few times a day, which it handles fine.
-#
-# A single GitHub job caps at 6 hours, and our window (7am-9pm Pacific) is 14h,
-# so the loop runs ~5.5h then hands off to the next scheduled/queued run. The
-# concurrency group keeps exactly one loop alive at a time.
+# WHY: GitHub's scheduler is unreliable — it won't reliably start our job, and a
+# single job caps at 6 hours (our window is 14h). So:
+#   1. One job polls every 30 min on the runner's OWN clock (reliable cadence).
+#   2. At the end of its ~5.5h budget it LAUNCHES THE NEXT JOB ITSELF
+#      (self-chaining), so it no longer depends on the scheduler to restart, and
+#      runs continuously across the whole 7am-9pm window (and overnight, where it
+#      simply idles because run_due only polls inside the window).
+# The schedule below is now only a safety net to restart the chain if it ever
+# breaks. Concurrency keeps exactly one loop alive at a time.
 # -----------------------------------------------------------------------------
 name: Collect charger availability
 
 on:
   schedule:
-    # Hourly kick-offs across the window (UTC 14:00-04:00 = 7am-9pm Pacific).
-    # Only one loop runs at a time; extra kick-offs just keep one queued to
-    # take over when a 5.5h loop ends.
-    - cron: "3 14-23,0-4 * * *"
+    - cron: "17 */4 * * *"        # safety-net restart every 4h (deduped by concurrency)
   workflow_dispatch:
     inputs:
       max_minutes:
@@ -30,6 +27,7 @@ on:
 
 permissions:
   contents: write
+  actions: write                  # needed to launch the next loop (self-chain)
 
 concurrency:
   group: collector
@@ -38,14 +36,13 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 350           # under GitHub's 6h job cap
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
       - name: Poll loop (self-timed, 30-min cadence)
         env:
@@ -58,25 +55,26 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           end=$(( $(date +%s) + 60 * MAX_MINUTES ))
           while [ "$(date +%s)" -lt "$end" ]; do
-            h=$(TZ=America/Los_Angeles date +%H); h=$((10#$h))
-            if [ "$h" -lt 7 ] || [ "$h" -ge 21 ]; then
-              echo "Outside 7am-9pm Pacific — stopping loop."
-              break
-            fi
-            python src/run_due.py || true
+            python src/run_due.py || true       # run_due only polls inside 7am-9pm Pacific
             git add data/
             if ! git diff --cached --quiet; then
               git commit -m "data: collection run $(date -u +'%Y-%m-%dT%H:%MZ')" || true
               git pull --rebase --autostash origin main || true
               git push || true
-            else
-              echo "Nothing new this cycle."
             fi
-            # Stop early if the next sleep would run past our time budget.
-            if [ "$(( $(date +%s) + SLEEP_SECONDS ))" -ge "$end" ]; then
-              echo "Time budget reached — ending loop; next run will continue."
-              break
-            fi
-            echo "Sleeping ${SLEEP_SECONDS}s until next poll..."
+            if [ "$(( $(date +%s) + SLEEP_SECONDS ))" -ge "$end" ]; then break; fi
             sleep "$SLEEP_SECONDS"
           done
+
+      - name: Self-chain to next loop
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          today=$(date -u +%Y-%m-%d)
+          if [[ "$today" > "2026-08-31" ]]; then
+            echo "Past chain-until date (2026-08-31); not re-launching."
+          else
+            gh workflow run collect.yml -f max_minutes=330 -f sleep_seconds=1800 \
+              && echo "Launched next loop." || echo "Chain dispatch failed."
+          fi
