@@ -1,0 +1,14 @@
+name: _kick
+on:
+  push:
+    branches: [main]
+permissions:
+  actions: write
+jobs:
+  kick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run collect.yml -f max_minutes=330 -f sleep_seconds=1800 && echo "bootstrapped collect chain"
