@@ -11,3 +11,4 @@
 2026-07-22T19:32:05.131557-07:00 bellevue_census: wrote=0 failed=75 errors={'HTTP403': 75} requests_today=825
 2026-07-22T20:17:41.915428-07:00 bellevue_census: wrote=0 failed=75 errors={'HTTP403': 75} requests_today=900
 2026-07-23T07:04:21.949980-07:00 bellevue_census: wrote=0 failed=75 errors={'HTTP403:{"detailedError":{"code":"InsufficientFunds","message":"You do not have enough c': 75} requests_today=75
+2026-07-23T07:49:58.346104-07:00 bellevue_census: wrote=45 failed=30 errors={'HTTP403:{"detailedError":{"code":"InsufficientFunds","message":"You do not have enough c': 30} requests_today=150
