@@ -103,11 +103,11 @@ def poll_one(avail_id, tries=3):
             time.sleep(1 + attempt)
             continue
         if r.status_code in (403, 429):
-            last = f"HTTP{r.status_code}"
+            last = f"HTTP{r.status_code}:" + r.text[:80].replace(chr(10)," ").strip()
             time.sleep(2 * (attempt + 1))     # back off, then retry
             continue
         if not r.ok:
-            return None, f"HTTP{r.status_code}"
+            return None, f"HTTP{r.status_code}:" + r.text[:80].replace(chr(10)," ").strip()
         data = r.json()
         avail = occ = res = oos = unk = total = 0
         for c in data.get("connectors", []):
