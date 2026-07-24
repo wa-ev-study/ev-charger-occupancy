@@ -72,8 +72,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           today=$(date -u +%Y-%m-%d)
-          if [[ "$today" > "2026-08-31" ]]; then
-            echo "Past chain-until date (2026-08-31); not re-launching."
+          if [[ "$today" > "2026-07-31" ]]; then
+            echo "Past chain-until date (2026-07-31); not re-launching."
           else
             gh workflow run collect.yml -f max_minutes=330 -f sleep_seconds=1800 \
               && echo "Launched next loop." || echo "Chain dispatch failed."

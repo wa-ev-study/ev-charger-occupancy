@@ -112,7 +112,7 @@ occupancy:
 pilot:
   label: "Bellevue EV Charger Pilot"
   start_date: "2026-07-18"   # Saturday
-  end_date: "2026-07-24"     # Friday (collection continues past this date)
+  end_date: "2026-07-31"     # extended +7 days (Fri) — collection continues past this date
 
 # -----------------------------------------------------------------------------
 # NIGHTLY EMAIL

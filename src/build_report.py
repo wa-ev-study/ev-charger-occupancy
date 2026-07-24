@@ -202,7 +202,8 @@ def main(report_date_str=None):
     ws = wb.active
     ws.title = "Today"
     pilot_day = (today - PILOT_START).days + 1
-    pilot_note = (f"Pilot day {pilot_day} of 7" if PILOT_START <= today <= PILOT_END
+    pilot_total = (PILOT_END - PILOT_START).days + 1
+    pilot_note = (f"Pilot day {pilot_day} of {pilot_total}" if PILOT_START <= today <= PILOT_END
                   else ("Pre-pilot test" if today < PILOT_START else "Post-pilot (still collecting)"))
     sheet_header(ws, f"Bellevue EV Charger Usage — {tstr} ({dow})",
                  f"{pilot_note}. Occupancy = share of ports in use, 7am-9pm, 30-min polls.")
