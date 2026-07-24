@@ -1,13 +1,11 @@
-name: Nightly report + email
+name: Nightly report + email (manual backup)
 
-# Runs once a day at 04:15 UTC = 9:15 PM Pacific (PDT), just after the day's
-# 7am-9pm collection window closes. Refreshes the station list (and tags funded
-# / apartment-condo chargers via NREL when reachable), rolls up the day, builds
-# one Excel report (Today + Running Total), commits it, and emails it.
+# NOTE: The nightly report + email now runs from the always-on collector loop
+# (collect.yml), NOT from a GitHub cron — GitHub was silently dropping this daily
+# schedule. This workflow is kept only as a MANUAL backup (run it by hand from
+# the Actions tab if you ever need to regenerate/resend a report).
 
 on:
-  schedule:
-    - cron: "15 4 * * *"
   workflow_dispatch: {}
 
 permissions:

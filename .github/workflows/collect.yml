@@ -48,6 +48,8 @@ jobs:
         env:
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MAX_MINUTES: ${{ github.event.inputs.max_minutes || '330' }}
           SLEEP_SECONDS: ${{ github.event.inputs.sleep_seconds || '1800' }}
         run: |
@@ -59,6 +61,22 @@ jobs:
             git add data/
             if ! git diff --cached --quiet; then
               git commit -m "data: collection run $(date -u +'%Y-%m-%dT%H:%MZ')" || true
+              git pull --rebase --autostash origin main || true
+              git push || true
+            fi
+            # Once per day, after the 9pm window closes, build + email the report.
+            # (Runs from the reliable loop instead of GitHub's flaky nightly cron.)
+            H=$(TZ=America/Los_Angeles date +%H); H=$((10#$H))
+            TODAY=$(TZ=America/Los_Angeles date +%Y-%m-%d)
+            if [ "$H" -ge 21 ] && [ ! -f "data/reports/_sent_${TODAY}" ]; then
+              echo "== Nightly report + email for ${TODAY} =="
+              python src/stations.py Bellevue || true
+              python src/rollup.py || true
+              python src/build_report.py || true
+              python src/send_report.py || true
+              mkdir -p data/reports && touch "data/reports/_sent_${TODAY}"
+              git add data/
+              git commit -m "nightly report + email ${TODAY}" || true
               git pull --rebase --autostash origin main || true
               git push || true
             fi
