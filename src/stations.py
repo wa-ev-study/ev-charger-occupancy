@@ -142,6 +142,9 @@ def build_master(cities):
 
     try_nrel_enrichment(stations)
 
+    if not stations:
+        print("No stations fetched (API error?) — keeping existing master list.")
+        return json.loads(MASTER_PATH.read_text()) if MASTER_PATH.exists() else []
     MASTER_PATH.parent.mkdir(parents=True, exist_ok=True)
     MASTER_PATH.write_text(json.dumps(stations, indent=2))
     funded = sum(1 for s in stations if s["funded"])
