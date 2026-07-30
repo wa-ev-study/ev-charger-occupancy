@@ -1,11 +1,11 @@
-# Bellevue EV Charger Pilot — 2026-07-27 (Monday)
-*Pilot day 10 of 14*
+# Bellevue EV Charger Pilot — 2026-07-28 (Tuesday)
+*Pilot day 11 of 14*
 
 ## Today
-- Chargers polled: **80** (69 usable, 11 offline all day)
-- Average occupancy (usable): **31.1%**
-- Chargers with zero use: **9 of 69 (13.0%)**
-- Data quality: **20 of ~28** poll cycles (healthy)
+- Chargers polled: **0** (0 usable, 0 offline all day)
+- Average occupancy: n/a
+- Chargers with zero use: **0 of 0 (None%)**
+- Data quality: **0 of ~28** poll cycles (THIN — fewer samples than expected)
 
 ## Running total (pilot to date)
 - Days collected: **9**

@@ -144,18 +144,6 @@
     "multifamily": false
   },
   {
-    "nrel_id": "18812148-d06d-84f6-8253-e40eb57c7dc8",
-    "tomtom_availability_id": "18812148-d06d-84f6-8253-e40eb57c7dc8",
-    "name": "ChargePoint",
-    "address": "10657 Northeast 2nd St P2, Bellevue, WA 98004",
-    "city": "Bellevue",
-    "lat": 47.611656,
-    "lon": -122.198635,
-    "network": "ChargePoint",
-    "funded": false,
-    "multifamily": false
-  },
-  {
     "nrel_id": "044846d8-15c7-8792-9e03-cbd31bbae990",
     "tomtom_availability_id": "044846d8-15c7-8792-9e03-cbd31bbae990",
     "name": "ChargePoint",
@@ -579,10 +567,10 @@
     "nrel_id": "4540e6c5-c61f-494f-a5b4-f298bba5e288",
     "tomtom_availability_id": "4540e6c5-c61f-494f-a5b4-f298bba5e288",
     "name": "ChargePoint",
-    "address": "600 108th Ave Northeast, Bellevue, WA 98004",
+    "address": "600 108th Avenue Northeast, Bellevue, WA 98004",
     "city": "Bellevue",
     "lat": 47.616148,
-    "lon": -122.196129,
+    "lon": -122.196111,
     "network": "ChargePoint",
     "funded": false,
     "multifamily": false
@@ -644,18 +632,6 @@
     "lat": 47.617935,
     "lon": -122.196395,
     "network": "Blink",
-    "funded": false,
-    "multifamily": false
-  },
-  {
-    "nrel_id": "1cbd79e5-7fe7-81c7-b642-786dcc39d846",
-    "tomtom_availability_id": "1cbd79e5-7fe7-81c7-b642-786dcc39d846",
-    "name": "ChargePoint",
-    "address": "597 112th Ave Northeast, Bellevue, WA 98004",
-    "city": "Bellevue",
-    "lat": 47.615276,
-    "lon": -122.191255,
-    "network": "ChargePoint",
     "funded": false,
     "multifamily": false
   },
@@ -943,18 +919,6 @@
     "city": "Bellevue",
     "lat": 47.609579,
     "lon": -122.176659,
-    "network": "ChargePoint",
-    "funded": false,
-    "multifamily": false
-  },
-  {
-    "nrel_id": "e3940edc-139a-4281-a5c1-a25aec2ddb2e",
-    "tomtom_availability_id": "e3940edc-139a-4281-a5c1-a25aec2ddb2e",
-    "name": "ChargePoint",
-    "address": "1525 121st Ave Northeast, Bellevue, WA 98005",
-    "city": "Bellevue",
-    "lat": 47.622425,
-    "lon": -122.178896,
     "network": "ChargePoint",
     "funded": false,
     "multifamily": false

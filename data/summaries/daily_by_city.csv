@@ -5,3 +5,4 @@ date,city,segment,stations,avg_occupancy_pct,pct_stations_zero_use
 2026-07-25,Bellevue,all,80,20.4,41.2
 2026-07-26,Bellevue,all,80,16.9,38.8
 2026-07-27,Bellevue,all,80,31.1,25.0
+2026-07-29,Bellevue,all,80,26.8,36.2
