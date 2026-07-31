@@ -1,16 +1,16 @@
-# Bellevue EV Charger Pilot — 2026-07-28 (Tuesday)
-*Pilot day 11 of 14*
+# Bellevue EV Charger Pilot — 2026-07-30 (Thursday)
+*Pilot day 13 of 14*
 
 ## Today
-- Chargers polled: **0** (0 usable, 0 offline all day)
-- Average occupancy: n/a
-- Chargers with zero use: **0 of 0 (None%)**
-- Data quality: **0 of ~28** poll cycles (THIN — fewer samples than expected)
+- Chargers polled: **77** (72 usable, 5 offline all day)
+- Average occupancy (usable): **22.0%**
+- Chargers with zero use: **19 of 72 (26.4%)**
+- Data quality: **21 of ~28** poll cycles (healthy)
 
 ## Running total (pilot to date)
-- Days collected: **9**
-- Cumulative average occupancy: **22.3%**
-- Usable station-days with zero use: **31.9%**
+- Days collected: **11**
+- Cumulative average occupancy: **22.7%**
+- Usable station-days with zero use: **30.7%**
 
 _Funded and apartment/condo subsets activate automatically once the NREL database is reachable again._
 
