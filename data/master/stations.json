@@ -108,8 +108,8 @@
     "multifamily": false
   },
   {
-    "nrel_id": "338680b9-078b-87de-8f33-2f679351e538",
-    "tomtom_availability_id": "338680b9-078b-87de-8f33-2f679351e538",
+    "nrel_id": "117f7cb2-fb43-8d8f-a117-f654b88e6df5",
+    "tomtom_availability_id": "117f7cb2-fb43-8d8f-a117-f654b88e6df5",
     "name": "ChargePoint",
     "address": "10657 Northeast 2nd Street, Bellevue, WA 98004",
     "city": "Bellevue",
@@ -132,8 +132,8 @@
     "multifamily": false
   },
   {
-    "nrel_id": "117f7cb2-fb43-8d8f-a117-f654b88e6df5",
-    "tomtom_availability_id": "117f7cb2-fb43-8d8f-a117-f654b88e6df5",
+    "nrel_id": "338680b9-078b-87de-8f33-2f679351e538",
+    "tomtom_availability_id": "338680b9-078b-87de-8f33-2f679351e538",
     "name": "ChargePoint",
     "address": "10657 Northeast 2nd Street, Bellevue, WA 98004",
     "city": "Bellevue",
@@ -492,18 +492,6 @@
     "multifamily": false
   },
   {
-    "nrel_id": "306858be-16c2-8640-9874-12775d4d4447",
-    "tomtom_availability_id": "306858be-16c2-8640-9874-12775d4d4447",
-    "name": "ChargePoint",
-    "address": "10850 Northeast 6th Street, Bellevue, WA 98004",
-    "city": "Bellevue",
-    "lat": 47.615879,
-    "lon": -122.196115,
-    "network": "ChargePoint",
-    "funded": false,
-    "multifamily": false
-  },
-  {
     "nrel_id": "2764c23d-d189-4222-9f5d-d47194b90da7",
     "tomtom_availability_id": "2764c23d-d189-4222-9f5d-d47194b90da7",
     "name": "ChargePoint",
@@ -571,30 +559,6 @@
     "city": "Bellevue",
     "lat": 47.616148,
     "lon": -122.196111,
-    "network": "ChargePoint",
-    "funded": false,
-    "multifamily": false
-  },
-  {
-    "nrel_id": "2435f59a-0978-8a04-b8bf-9a365dbf658a",
-    "tomtom_availability_id": "2435f59a-0978-8a04-b8bf-9a365dbf658a",
-    "name": "ChargePoint",
-    "address": "700 108th Ave Northeast, Bellevue, WA 98004",
-    "city": "Bellevue",
-    "lat": 47.616298,
-    "lon": -122.196113,
-    "network": "ChargePoint",
-    "funded": false,
-    "multifamily": false
-  },
-  {
-    "nrel_id": "281706f5-2deb-8f2b-86e0-6a49343529a8",
-    "tomtom_availability_id": "281706f5-2deb-8f2b-86e0-6a49343529a8",
-    "name": "ChargePoint",
-    "address": "633 110th Avenue Northeast, Bellevue, WA 98004",
-    "city": "Bellevue",
-    "lat": 47.616367,
-    "lon": -122.194546,
     "network": "ChargePoint",
     "funded": false,
     "multifamily": false
@@ -919,6 +883,42 @@
     "city": "Bellevue",
     "lat": 47.609579,
     "lon": -122.176659,
+    "network": "ChargePoint",
+    "funded": false,
+    "multifamily": false
+  },
+  {
+    "nrel_id": "e3940edc-139a-4281-a5c1-a25aec2ddb2e",
+    "tomtom_availability_id": "e3940edc-139a-4281-a5c1-a25aec2ddb2e",
+    "name": "ChargePoint",
+    "address": "1525 121st Ave Northeast, Bellevue, WA 98005",
+    "city": "Bellevue",
+    "lat": 47.622425,
+    "lon": -122.178896,
+    "network": "ChargePoint",
+    "funded": false,
+    "multifamily": false
+  },
+  {
+    "nrel_id": "d7157204-e6be-478c-b8cb-ce04e9d8d9e5",
+    "tomtom_availability_id": "d7157204-e6be-478c-b8cb-ce04e9d8d9e5",
+    "name": "ChargePoint",
+    "address": "1550 121st Ave Northeast, Bellevue, WA 98005",
+    "city": "Bellevue",
+    "lat": 47.622496,
+    "lon": -122.177518,
+    "network": "ChargePoint",
+    "funded": false,
+    "multifamily": false
+  },
+  {
+    "nrel_id": "a2a4c022-ff92-4323-8252-932f1bbd42fe",
+    "tomtom_availability_id": "a2a4c022-ff92-4323-8252-932f1bbd42fe",
+    "name": "ChargePoint",
+    "address": "12355 Northeast District Way, Bellevue, WA 98005",
+    "city": "Bellevue",
+    "lat": 47.621104,
+    "lon": -122.175923,
     "network": "ChargePoint",
     "funded": false,
     "multifamily": false
